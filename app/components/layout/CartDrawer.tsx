@@ -3,9 +3,11 @@
 import { Plus, Minus, X } from "lucide-react";
 import { COLORS } from "@/data/constants";
 import { useApp } from "@/context/AppContext";
+import { useNav } from "@/hooks/useNav";
 
 export function CartDrawer() {
   const { cart, cartOpen, setCartOpen, removeFromCart, updateQty } = useApp();
+  const { navigate } = useNav();
 
   const subtotal = cart.reduce((s, item) => s + item.product.price * item.qty, 0);
   const shipping = subtotal > 5000 ? 0 : 200;
@@ -165,6 +167,10 @@ export function CartDrawer() {
               <span>PKR {total}</span>
             </div>
             <button
+              onClick={() => {
+                setCartOpen(false);
+                navigate("checkout");
+              }}
               style={{
                 width: "100%",
                 padding: 12,

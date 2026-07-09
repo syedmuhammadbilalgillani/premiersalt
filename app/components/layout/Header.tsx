@@ -13,6 +13,7 @@ import {
 import { COLORS } from "@/data/constants";
 import { IMG } from "@/data/images";
 import { useApp } from "@/context/AppContext";
+import { useNav, PageName } from "@/hooks/useNav";
 
 const NAV_ITEMS = [
   "Shop",
@@ -22,7 +23,7 @@ const NAV_ITEMS = [
   "Contact",
 ] as const;
 
-const NAV_PAGES: Record<string, any> = {
+const NAV_PAGES: Record<string, PageName> = {
   Shop: "shop",
   "Wholesale & Export": "wholesale",
   About: "about",
@@ -135,7 +136,8 @@ export function Header({
   scrolled: boolean;
   isHero: boolean;
 }) {
-  const { navigate, cart, setCartOpen } = useApp();
+  const { cart, setCartOpen } = useApp();
+  const { navigate } = useNav();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobile, setMobile] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);

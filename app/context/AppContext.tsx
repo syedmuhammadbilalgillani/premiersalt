@@ -1,22 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { AppCtx, CartItem, Page, Product } from "@/types";
+import { AppCtx, CartItem, Product } from "@/types";
 
 const AppContextCreate = createContext<AppCtx | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [page, setPage] = useState<Page>("home");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  const navigate = (p: Page, extra?: Record<string, unknown>) => {
-    setPage(p);
-    if (extra?.product) {
-      setSelectedProduct(extra.product as Product);
-    }
-  };
 
   const addToCart = (product: Product, weight: string) => {
     const existing = cart.find(
@@ -48,16 +39,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const value: AppCtx = {
-    page,
-    navigate,
     cart,
     addToCart,
     removeFromCart,
     updateQty,
     cartOpen,
     setCartOpen,
-    selectedProduct,
-    setSelectedProduct,
   };
 
   return (

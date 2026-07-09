@@ -6,6 +6,7 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { COLORS } from "@/data/constants";
+import { ContactPage as ContactPageComponent } from "@/components/pages/ContactPage";
 
 export default function ContactPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,12 +24,7 @@ export default function ContactPage() {
         <Header scrolled={scrolled} isHero={false} />
       </div>
       <main>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Contact</h1>
-            <p className="text-xl text-gray-600">Contact page coming soon...</p>
-          </div>
-        </div>
+        <ContactPageComponent />
       </main>
       <Footer />
       <CartDrawer />

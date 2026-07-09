@@ -1,192 +1,235 @@
 "use client";
 
-import { Plus, Minus, X } from "lucide-react";
+import { ArrowRight, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { COLORS } from "@/data/constants";
 import { useApp } from "@/context/AppContext";
 import { useNav } from "@/hooks/useNav";
+import { PrimaryBtn, TextLink } from "@/components/common";
+
+const { IVORY, NAVY, SLATE, CHARCOAL, SAND } = COLORS;
 
 export function CartDrawer() {
-  const { cart, cartOpen, setCartOpen, removeFromCart, updateQty } = useApp();
+  const { cart, cartOpen, setCartOpen, updateQty, removeFromCart } = useApp();
   const { navigate } = useNav();
-
-  const subtotal = cart.reduce((s, item) => s + item.product.price * item.qty, 0);
-  const shipping = subtotal > 5000 ? 0 : 200;
-  const total = subtotal + shipping;
-
+  const total = cart.reduce((s, i) => s + i.product.price * i.qty, 0);
   return (
     <>
-      {/* Backdrop */}
       {cartOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/20"
+          className="fixed inset-0 z-50"
+          style={{
+            background: "rgba(12,35,64,0.3)",
+            backdropFilter: "blur(4px)",
+          }}
           onClick={() => setCartOpen(false)}
         />
       )}
-
-      {/* Drawer */}
       <div
+        className="fixed top-0 right-0 h-full z-50 flex flex-col"
         style={{
-          position: "fixed",
-          right: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 50,
-          width: "100%",
-          maxWidth: 400,
-          background: COLORS.IVORY,
+          width: "min(440px,100vw)",
+          background: IVORY,
           transform: cartOpen ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 0.3s ease",
-          display: "flex",
-          flexDirection: "column",
+          transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
         }}
       >
-        {/* Header */}
         <div
-          style={{
-            padding: 20,
-            borderBottom: `1px solid rgba(12,35,64,0.1)`,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          className="flex items-center justify-between px-8 py-5 border-b"
+          style={{ borderColor: "rgba(12,35,64,0.1)" }}
         >
-          <h2
+          <p
             style={{
               fontFamily: "Fraunces,serif",
-              fontSize: 18,
-              fontWeight: 600,
-              color: COLORS.NAVY,
+              fontWeight: 400,
+              fontSize: 20,
+              color: NAVY,
             }}
           >
-            Cart
-          </h2>
-          <button
-            onClick={() => setCartOpen(false)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <X size={20} color={COLORS.NAVY} />
+            Your Cart ({cart.reduce((s, i) => s + i.qty, 0)})
+          </p>
+          <button onClick={() => setCartOpen(false)}>
+            <X size={18} style={{ color: SLATE }} />
           </button>
         </div>
-
-        {/* Items */}
-        <div style={{ flex: 1, overflowY: "auto", padding: 20 }}>
-          {cart.length === 0 ? (
-            <p style={{ color: COLORS.SLATE, fontSize: 14, textAlign: "center" }}>
+        {cart.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8 text-center">
+            <ShoppingBag
+              size={40}
+              style={{ color: "rgba(12,35,64,0.2)" }}
+              strokeWidth={1}
+            />
+            <p
+              style={{
+                fontFamily: "Fraunces,serif",
+                fontStyle: "italic",
+                fontSize: 17,
+                color: SLATE,
+              }}
+            >
               Your cart is empty
             </p>
-          ) : (
-            <div className="space-y-4">
+            <TextLink
+              onClick={() => {
+                setCartOpen(false);
+                navigate("shop");
+              }}
+            >
+              Browse products
+            </TextLink>
+          </div>
+        ) : (
+          <>
+            <div className="flex-1 overflow-y-auto px-8 py-8 space-y-7">
               {cart.map((item) => (
-                <div key={item.product.id} style={{ borderBottom: "1px solid rgba(12,35,64,0.08)", paddingBottom: 16 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                    <div>
-                      <p style={{ fontWeight: 500, color: COLORS.NAVY, fontSize: 13 }}>
-                        {item.product.name}
-                      </p>
-                      <p style={{ fontSize: 12, color: COLORS.SLATE }}>
-                        {item.weight}
-                      </p>
-                    </div>
-                    <p style={{ fontWeight: 600, color: COLORS.NAVY }}>
-                      PKR {item.product.price * item.qty}
-                    </p>
+                <div
+                  key={`${item.product.id}-${item.weight}`}
+                  className="flex gap-5"
+                >
+                  <div
+                    className="w-20 h-20 flex-shrink-0 overflow-hidden"
+                    style={{ background: SAND }}
+                  >
+                    <img
+                      src={item.product.img}
+                      alt={item.product.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <button
-                      onClick={() => updateQty(item.product.id, item.qty - 1)}
+                  <div className="flex-1 min-w-0">
+                    <p
                       style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: 0,
+                        fontFamily: "Fraunces,serif",
+                        fontWeight: 400,
+                        fontSize: 14,
+                        color: CHARCOAL,
+                        marginBottom: 2,
+                        lineHeight: 1.3,
                       }}
                     >
-                      <Minus size={16} color={COLORS.SLATE} />
-                    </button>
-                    <span style={{ fontSize: 14, fontWeight: 500, minWidth: 20, textAlign: "center" }}>
-                      {item.qty}
-                    </span>
-                    <button
-                      onClick={() => updateQty(item.product.id, item.qty + 1)}
+                      {item.product.name}
+                    </p>
+                    <p
                       style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: 0,
+                        fontFamily: "Inter,sans-serif",
+                        fontSize: 11,
+                        color: SLATE,
+                        marginBottom: 4,
                       }}
                     >
-                      <Plus size={16} color={COLORS.SLATE} />
-                    </button>
-                    <button
-                      onClick={() => removeFromCart(item.product.id)}
+                      {item.weight}
+                    </p>
+                    <p
                       style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        padding: 0,
-                        marginLeft: "auto",
+                        fontFamily: "Inter,sans-serif",
+                        fontWeight: 600,
+                        fontSize: 13,
+                        color: NAVY,
                       }}
                     >
-                      <X size={16} color={COLORS.CORAL} />
-                    </button>
+                      PKR {(item.product.price * item.qty).toLocaleString()}
+                    </p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <div
+                        className="flex items-center border"
+                        style={{ borderColor: "rgba(12,35,64,0.18)" }}
+                      >
+                        <button
+                          className="w-7 h-7 flex items-center justify-center"
+                          style={{ color: NAVY }}
+                          onClick={() =>
+                            item.qty === 1
+                              ? removeFromCart(item.product.id)
+                              : updateQty(item.product.id, item.qty - 1)
+                          }
+                        >
+                          <Minus size={10} />
+                        </button>
+                        <span
+                          className="w-8 text-center"
+                          style={{
+                            fontFamily: "Inter,sans-serif",
+                            fontSize: 12,
+                            color: CHARCOAL,
+                          }}
+                        >
+                          {item.qty}
+                        </span>
+                        <button
+                          className="w-7 h-7 flex items-center justify-center"
+                          style={{ color: NAVY }}
+                          onClick={() =>
+                            updateQty(item.product.id, item.qty + 1)
+                          }
+                        >
+                          <Plus size={10} />
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.product.id)}
+                        style={{
+                          fontFamily: "Inter,sans-serif",
+                          fontSize: 11,
+                          color: SLATE,
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                          textUnderlineOffset: 2,
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        {cart.length > 0 && (
-          <div style={{ padding: 20, borderTop: `1px solid rgba(12,35,64,0.1)` }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 13 }}>
-              <span>Subtotal</span>
-              <span>PKR {subtotal}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, fontSize: 13 }}>
-              <span>Shipping</span>
-              <span>{shipping === 0 ? "Free" : `PKR ${shipping}`}</span>
-            </div>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 16,
-                fontSize: 15,
-                fontWeight: 600,
-                paddingTop: 12,
-                borderTop: `1px solid rgba(12,35,64,0.1)`,
-              }}
+              className="px-8 py-7 border-t"
+              style={{ borderColor: "rgba(12,35,64,0.1)" }}
             >
-              <span>Total</span>
-              <span>PKR {total}</span>
+              <div className="flex justify-between mb-2">
+                <span
+                  style={{
+                    fontFamily: "Inter,sans-serif",
+                    fontSize: 12,
+                    color: SLATE,
+                  }}
+                >
+                  Subtotal
+                </span>
+                <span
+                  style={{
+                    fontFamily: "Inter,sans-serif",
+                    fontWeight: 600,
+                    fontSize: 15,
+                    color: NAVY,
+                  }}
+                >
+                  PKR {total.toLocaleString()}
+                </span>
+              </div>
+              <p
+                style={{
+                  fontFamily: "Inter,sans-serif",
+                  fontSize: 11,
+                  color: SLATE,
+                  marginBottom: 20,
+                }}
+              >
+                Shipping calculated at checkout
+              </p>
+              <PrimaryBtn
+                fullWidth
+                onClick={() => {
+                  setCartOpen(false);
+                  navigate("checkout");
+                }}
+              >
+                Proceed to Checkout <ArrowRight size={12} />
+              </PrimaryBtn>
             </div>
-            <button
-              onClick={() => {
-                setCartOpen(false);
-                navigate("checkout");
-              }}
-              style={{
-                width: "100%",
-                padding: 12,
-                background: COLORS.NAVY,
-                color: COLORS.IVORY,
-                border: "none",
-                borderRadius: 6,
-                fontWeight: 600,
-                cursor: "pointer",
-                fontFamily: "Inter,sans-serif",
-                fontSize: 13,
-              }}
-            >
-              Proceed to Checkout
-            </button>
-          </div>
+          </>
         )}
       </div>
     </>

@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { COLORS } from "@/data/constants";
+import { ConfirmationPage as ConfirmationPageComponent } from "@/components/pages/ConfirmationPage";
 
 export default function ConfirmationPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,15 +20,10 @@ export default function ConfirmationPage() {
     <div style={{ fontFamily: "Inter,sans-serif", background: COLORS.IVORY }}>
       <div className="sticky top-0 z-40">
         <AnnouncementBar />
-        <Header scrolled={scrolled} isHero={false} />
+        <Header scrolled={scrolled} isHero={true} />
       </div>
       <main>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Order Confirmed</h1>
-            <p className="text-xl text-gray-600">Confirmation page coming soon...</p>
-          </div>
-        </div>
+        <ConfirmationPageComponent />
       </main>
       <CartDrawer />
     </div>

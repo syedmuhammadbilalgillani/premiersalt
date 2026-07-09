@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Search,
   User,
@@ -145,11 +145,6 @@ export function Header({
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const totalItems = cart.reduce((s, i) => s + i.qty, 0);
 
-  useEffect(() => {
-    setMobile(false);
-    setOpenMenu(null);
-  }, []);
-
   const enter = (label: string) => {
     if (leaveTimer.current) clearTimeout(leaveTimer.current);
     setOpenMenu(MEGA[label] ? label : null);
@@ -218,7 +213,12 @@ export function Header({
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
             {NAV_ITEMS.map((label) => (
-              <div key={label} className="relative">
+              <div
+                key={label}
+                className="relative"
+                onMouseEnter={() => enter(label)}
+                onMouseLeave={leave}
+              >
                 <button
                   onClick={() => navigate(NAV_PAGES[label])}
                   className="relative flex items-center gap-0.5 px-3 py-2"
@@ -236,7 +236,15 @@ export function Header({
                 >
                   {label}
                   {MEGA[label] && (
-                    <ChevronDown size={9} style={{ opacity: 0.5 }} />
+                    <ChevronDown
+                      size={9}
+                      style={{
+                        opacity: 0.5,
+                        transform:
+                          openMenu === label ? "rotate(180deg)" : "none",
+                        transition: "transform 0.2s",
+                      }}
+                    />
                   )}
                 </button>
               </div>
@@ -258,6 +266,9 @@ export function Header({
                   strokeWidth={1.5}
                 />
               )}
+            </button>
+            <button className="hidden lg:flex w-9 h-9 items-center justify-center rounded-sm">
+              <User size={15} style={{ color: textColor }} strokeWidth={1.5} />
             </button>
             <button
               onClick={() => setCartOpen(true)}
@@ -299,54 +310,186 @@ export function Header({
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Search — animated slide-down */}
         <div
           style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 39,
-            background: COLORS.NAVY,
-            transform: mobile ? "translateX(0)" : "translateX(-100%)",
-            transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
-            paddingTop: 96,
-            overflowY: "auto",
+            maxHeight: searchOpen ? 64 : 0,
+            overflow: "hidden",
+            transition: "max-height 0.28s ease",
+            borderTop: searchOpen ? "1px solid rgba(12,35,64,0.08)" : "none",
+            background: COLORS.IVORY,
           }}
         >
-          <div className="px-8 pb-10">
-            {NAV_ITEMS.map((label) => (
-              <div key={label} style={{ borderBottom: "1px solid rgba(244,242,239,0.08)" }}>
-                <button
-                  onClick={() => {
-                    navigate(NAV_PAGES[label]);
-                    setMobile(false);
-                  }}
-                  className="flex items-center justify-between w-full py-5"
+          <div className="max-w-7xl mx-auto px-10 flex items-center gap-3 h-16">
+            <Search size={14} style={{ color: COLORS.SLATE, flexShrink: 0 }} />
+            <input
+              autoFocus={searchOpen}
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              placeholder="Search products, categories, or topics…"
+              className="flex-1 outline-none bg-transparent"
+              style={{
+                fontFamily: "Inter,sans-serif",
+                fontSize: 14,
+                color: COLORS.CHARCOAL,
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  setSearchOpen(false);
+                  setSearchVal("");
+                }
+              }}
+            />
+            {searchVal && (
+              <button onClick={() => setSearchVal("")}>
+                <X size={13} style={{ color: COLORS.SLATE }} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Mega menu — animated slide-down */}
+        <div
+          style={{
+            maxHeight: openMenu && MEGA[openMenu] ? 300 : 0,
+            overflow: "hidden",
+            transition: "max-height 0.28s cubic-bezier(0.4,0,0.2,1)",
+            background: COLORS.IVORY,
+            borderTop: "1px solid rgba(12,35,64,0.07)",
+            boxShadow: openMenu ? "0 16px 40px rgba(12,35,64,0.09)" : "none",
+          }}
+          onMouseEnter={() => {
+            if (leaveTimer.current) clearTimeout(leaveTimer.current);
+          }}
+          onMouseLeave={leave}
+        >
+          {openMenu && MEGA[openMenu] && (
+            <div
+              className="px-10 py-7 flex"
+              style={{
+                width: `${MEGA[openMenu].cols.length * 196 + 80}px`,
+                maxWidth: "100%",
+              }}
+            >
+              {MEGA[openMenu].cols.map((col, ci) => (
+                <div
+                  key={col.title}
+                  className="flex-shrink-0"
                   style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
+                    width: 196,
+                    paddingRight: 32,
+                    borderRight:
+                      ci < MEGA[openMenu].cols.length - 1
+                        ? "1px solid rgba(12,35,64,0.07)"
+                        : "none",
+                    marginRight: ci < MEGA[openMenu].cols.length - 1 ? 32 : 0,
                   }}
                 >
-                  <span
+                  <div
+                    className="overflow-hidden mb-3"
+                    style={{ background: COLORS.SAND, width: 148, height: 88 }}
+                  >
+                    <img
+                      src={col.img}
+                      alt={col.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p
                     style={{
                       fontFamily: "Fraunces,serif",
                       fontWeight: 400,
-                      fontSize: "clamp(1.3rem,5vw,1.9rem)",
-                      color: COLORS.IVORY,
+                      fontSize: 13,
+                      color: COLORS.NAVY,
+                      marginBottom: 8,
                     }}
                   >
-                    {label}
-                  </span>
-                  <ArrowRight size={15} style={{ color: "rgba(244,242,239,0.3)" }} />
-                </button>
-              </div>
-            ))}
-          </div>
+                    {col.title}
+                  </p>
+                  <ul className="space-y-2">
+                    {col.links.map((l) => (
+                      <li key={l.label}>
+                        <button
+                          onClick={() => {
+                            navigate("shop");
+                            setOpenMenu(null);
+                          }}
+                          style={{
+                            fontFamily: "Inter,sans-serif",
+                            fontSize: 12,
+                            color: COLORS.SLATE,
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                          }}
+                          className="hover:text-coral transition-colors text-left"
+                        >
+                          {l.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-        {mobile && (
-          <div className="fixed inset-0 z-38" onClick={() => setMobile(false)} />
-        )}
       </header>
+
+      {/* Mobile full-screen drawer */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 39,
+          background: COLORS.NAVY,
+          transform: mobile ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+          paddingTop: 96,
+          overflowY: "auto",
+        }}
+      >
+        <div className="px-8 pb-10">
+          {NAV_ITEMS.map((label) => (
+            <div
+              key={label}
+              style={{ borderBottom: "1px solid rgba(244,242,239,0.08)" }}
+            >
+              <button
+                onClick={() => {
+                  navigate(NAV_PAGES[label]);
+                  setMobile(false);
+                }}
+                className="flex items-center justify-between w-full py-5"
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "Fraunces,serif",
+                    fontWeight: 400,
+                    fontSize: "clamp(1.3rem,5vw,1.9rem)",
+                    color: COLORS.IVORY,
+                  }}
+                >
+                  {label}
+                </span>
+                <ArrowRight
+                  size={15}
+                  style={{ color: "rgba(244,242,239,0.3)" }}
+                />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+      {mobile && (
+        <div className="fixed inset-0 z-38" onClick={() => setMobile(false)} />
+      )}
     </>
   );
 }

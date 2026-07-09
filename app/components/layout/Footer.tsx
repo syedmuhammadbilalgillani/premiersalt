@@ -1,100 +1,193 @@
 "use client";
 
 import { COLORS } from "@/data/constants";
-import { Divider } from "@/components/ui/divider";
+import { useNav, PageName } from "@/hooks/useNav";
+
+const { NAVY, IVORY, CORAL } = COLORS;
 
 export function Footer() {
+  const { navigate } = useNav();
+  const cols = [
+    {
+      h: "Shop",
+      links: [
+        ["Edible & Gourmet Salt", "shop"],
+        ["Salt Lamps & Decor", "shop"],
+        ["Bath & Spa", "shop"],
+        ["Grill Plates & Slabs", "shop"],
+        ["Gift Sets", "shop"],
+      ],
+    },
+    {
+      h: "Wholesale",
+      links: [
+        ["Private Labeling", "wholesale"],
+        ["Bulk Orders", "wholesale"],
+        ["Certifications", "wholesale"],
+        ["Global Presence", "wholesale"],
+        ["Request a Quote", "wholesale"],
+      ],
+    },
+    {
+      h: "Company",
+      links: [
+        ["Our Story", "about"],
+        ["The Khewra Range", "about"],
+        ["Sustainability", "about"],
+        ["Journal", "journal"],
+        ["Contact Us", "contact"],
+      ],
+    },
+  ] as { h: string; links: [string, PageName][] }[];
   return (
-    <footer
-      style={{
-        background: COLORS.NAVY,
-        color: COLORS.IVORY,
-        padding: "60px 20px 40px",
-        fontFamily: "Inter,sans-serif",
-      }}
-    >
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-8">
-          {/* Company */}
-          <div>
-            <h3
+    <footer style={{ background: NAVY }}>
+      <div className="max-w-7xl mx-auto px-8 pt-16 pb-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10 mb-14">
+          <div className="lg:col-span-2">
+            <button onClick={() => navigate("home")} className="text-left mb-4">
+              <p
+                style={{
+                  fontFamily: "Fraunces,serif",
+                  fontWeight: 600,
+                  fontSize: 20,
+                  color: IVORY,
+                }}
+              >
+                PREMIER
+              </p>
+              <p
+                style={{
+                  fontFamily: "Inter,sans-serif",
+                  fontSize: 9,
+                  letterSpacing: "0.32em",
+                  color: CORAL,
+                  textTransform: "uppercase",
+                }}
+              >
+                SALT INDUSTRIES
+              </p>
+            </button>
+            <p
               style={{
-                fontFamily: "Fraunces,serif",
-                fontSize: 16,
-                fontWeight: 600,
-                marginBottom: 20,
+                fontFamily: "Inter,sans-serif",
+                fontSize: 13,
+                lineHeight: 1.75,
+                color: "rgba(244,242,239,0.45)",
+                maxWidth: 280,
+                marginBottom: 18,
               }}
             >
-              PREMIER SALT
-            </h3>
-            <p style={{ fontSize: 13, opacity: 0.7, lineHeight: 1.6 }}>
-              Premium Himalayan salt products sourced from the Khewra Salt Range,
-              Pakistan.
+              Premier Salt Industries Pvt Ltd — Pakistan&apos;s foremost Himalayan
+              pink salt manufacturer and exporter since 1980.
             </p>
+            {[
+              "📍 Industrial Estate, Khushab Road, Pind Dadan Khan, Punjab",
+              "📞 +92 300 123 4567",
+              "✉️ info@premiersalt.com.pk",
+            ].map((c) => (
+              <p
+                key={c}
+                style={{
+                  fontFamily: "Inter,sans-serif",
+                  fontSize: 12,
+                  color: "rgba(244,242,239,0.4)",
+                  marginBottom: 6,
+                }}
+              >
+                {c}
+              </p>
+            ))}
+            <div className="flex gap-4 mt-5" />
           </div>
-
-          {/* Shop */}
-          <div>
-            <h4 style={{ fontSize: 12, fontWeight: 600, marginBottom: 12, opacity: 0.8 }}>
-              SHOP
-            </h4>
-            <ul style={{ fontSize: 13, space: 1.6 }}>
-              <li style={{ marginBottom: 8 }}>
-                <button style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
-                  All Products
-                </button>
-              </li>
-              <li style={{ marginBottom: 8 }}>
-                <button style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
-                  Edible Salts
-                </button>
-              </li>
-              <li style={{ marginBottom: 8 }}>
-                <button style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
-                  Salt Lamps
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company Info */}
-          <div>
-            <h4 style={{ fontSize: 12, fontWeight: 600, marginBottom: 12, opacity: 0.8 }}>
-              COMPANY
-            </h4>
-            <ul style={{ fontSize: 13, space: 1.6 }}>
-              <li style={{ marginBottom: 8 }}>
-                <button style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
-                  About Us
-                </button>
-              </li>
-              <li style={{ marginBottom: 8 }}>
-                <button style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
-                  Sustainability
-                </button>
-              </li>
-              <li style={{ marginBottom: 8 }}>
-                <button style={{ background: "none", border: "none", color: "inherit", cursor: "pointer" }}>
-                  Contact
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 style={{ fontSize: 12, fontWeight: 600, marginBottom: 12, opacity: 0.8 }}>
-              CONTACT
-            </h4>
-            <p style={{ fontSize: 13, marginBottom: 8 }}>info@premiersalt.com.pk</p>
-            <p style={{ fontSize: 13, marginBottom: 8 }}>+92 300 123 4567</p>
-          </div>
+          {cols.map((col) => (
+            <div key={col.h}>
+              <p
+                style={{
+                  fontFamily: "Inter,sans-serif",
+                  fontWeight: 500,
+                  fontSize: 9,
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: CORAL,
+                  marginBottom: 16,
+                }}
+              >
+                {col.h}
+              </p>
+              <ul className="space-y-2.5">
+                {col.links.map(([label, page]) => (
+                  <li key={label}>
+                    <button
+                      onClick={() => navigate(page)}
+                      style={{
+                        fontFamily: "Inter,sans-serif",
+                        fontSize: 13,
+                        color: "rgba(244,242,239,0.4)",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                      }}
+                      className="hover:text-white transition-colors"
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-
-        <Divider />
-
-        <div style={{ marginTop: 32, fontSize: 12, opacity: 0.6, textAlign: "center" }}>
-          <p>&copy; 2024 Premier Salt. All rights reserved.</p>
+        <div
+          className="border-t flex flex-col md:flex-row items-center justify-between gap-4 pt-8"
+          style={{ borderColor: "rgba(244,242,239,0.1)" }}
+        >
+          <p
+            style={{
+              fontFamily: "Inter,sans-serif",
+              fontSize: 11,
+              color: "rgba(244,242,239,0.3)",
+            }}
+          >
+            © 2026 Premier Salt Industries Pvt Ltd. All rights reserved.
+          </p>
+          <div className="flex items-center gap-5">
+            {["Privacy Policy", "Terms of Service", "Shipping Policy"].map(
+              (l) => (
+                <button
+                  key={l}
+                  style={{
+                    fontFamily: "Inter,sans-serif",
+                    fontSize: 11,
+                    color: "rgba(244,242,239,0.3)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  className="hover:text-white transition-colors"
+                >
+                  {l}
+                </button>
+              ),
+            )}
+          </div>
+          <div className="flex gap-2">
+            {["VISA", "MC", "COD", "JCB"].map((m) => (
+              <span
+                key={m}
+                className="px-2 py-1"
+                style={{
+                  border: "1px solid rgba(244,242,239,0.12)",
+                  fontFamily: "Inter,sans-serif",
+                  fontSize: 9,
+                  letterSpacing: "0.06em",
+                  color: "rgba(244,242,239,0.35)",
+                }}
+              >
+                {m}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

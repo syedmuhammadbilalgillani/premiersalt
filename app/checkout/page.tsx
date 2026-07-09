@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { COLORS } from "@/data/constants";
+import { CheckoutPage as CheckoutPageComponent } from "@/components/pages/CheckoutPage";
 
 export default function CheckoutPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -22,12 +23,7 @@ export default function CheckoutPage() {
         <Header scrolled={scrolled} isHero={false} />
       </div>
       <main>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Checkout</h1>
-            <p className="text-xl text-gray-600">Checkout page coming soon...</p>
-          </div>
-        </div>
+        <CheckoutPageComponent />
       </main>
       <CartDrawer />
     </div>

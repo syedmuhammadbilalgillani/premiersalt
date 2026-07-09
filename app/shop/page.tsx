@@ -9,6 +9,7 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { COLORS } from "@/data/constants";
+import { ShopPage as ShopPageComponent } from "@/components/pages/ShopPage";
 
 export default function ShopPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -26,12 +27,7 @@ export default function ShopPage() {
         <Header scrolled={scrolled} isHero={false} />
       </div>
       <main>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Shop</h1>
-            <p className="text-xl text-gray-600">Shop page coming soon...</p>
-          </div>
-        </div>
+        <ShopPageComponent />
       </main>
       <Footer />
       <CartDrawer />

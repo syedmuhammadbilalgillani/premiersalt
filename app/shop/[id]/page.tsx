@@ -1,37 +1,25 @@
-"use client";
+import { notFound } from "next/navigation";
+import { ALL_PRODUCTS } from "@/data/products";
+import { ProductDetailPage } from "@/components/pages/ProductDetailPage";
+import { ProductPageShell } from "./ProductPageShell";
 
-import { useState, useEffect } from "react";
-import { Header } from "@/components/layout/Header";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
-import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
-import { COLORS } from "@/data/constants";
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const product = ALL_PRODUCTS.find((p) => p.id === Number(id));
 
-export default function ProductDetailPage() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
-  }, []);
+  if (!product) {
+    notFound();
+  }
 
   return (
-    <div style={{ fontFamily: "Inter,sans-serif", background: COLORS.IVORY }}>
-      <div className="sticky top-0 z-40">
-        <AnnouncementBar />
-        <Header scrolled={scrolled} isHero={false} />
-      </div>
-      <main>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Product Detail</h1>
-            <p className="text-xl text-gray-600">Product detail page coming soon...</p>
-          </div>
-        </div>
-      </main>
-      <Footer />
-      <CartDrawer />
-    </div>
+    <ProductPageShell>
+      {/* key forces a fresh mount when navigating between products, so the
+          gallery/weight/qty/tab selection state resets automatically. */}
+      <ProductDetailPage key={product.id} product={product} />
+    </ProductPageShell>
   );
 }

@@ -6,6 +6,7 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { COLORS } from "@/data/constants";
+import { JournalPage as JournalPageComponent } from "@/components/pages/JournalPage";
 
 export default function JournalPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,12 +24,7 @@ export default function JournalPage() {
         <Header scrolled={scrolled} isHero={false} />
       </div>
       <main>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Journal</h1>
-            <p className="text-xl text-gray-600">Journal page coming soon...</p>
-          </div>
-        </div>
+        <JournalPageComponent />
       </main>
       <Footer />
       <CartDrawer />
